@@ -1,2 +1,2 @@
-Hello
-This is my django projects
+Hello.
+This is my django project.
