@@ -1,2 +1,3 @@
-Hello.
-This is my django project.
+Hello
+
+This is my django project called Blog
