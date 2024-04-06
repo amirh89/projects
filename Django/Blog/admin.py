@@ -16,4 +16,31 @@ class PostAdmin(admin.ModelAdmin):
     date_hierarchy = 'publish'
     prepopulated_fields = {'slug' : ['title']}
     list_editable = ['status']
-    #list_display_links = ['author']
+
+
+@admin.register(Ticket)
+class TicketAdmin(admin.ModelAdmin):
+    list_display = ['name','subject','phone']
+
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ['post','name','created','active']
+    list_filter = ['active','created','updated']
+    search_fields = ['name','body']
+    list_editable = ['active']
+
+@admin.register(Login)
+class LoginAdmin(admin.ModelAdmin):
+    list_display = ['password','username','created','active']
+    list_filter = ['created','updated']
+    search_fields = ['password','username']
+    list_display_links = ['created']
+    list_editable = ['active']
+
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ['full_name','age','bio','active']
+    list_filter = ['active','created','updated']
+    search_fields = ['full_name','bio']
+    list_editable = ['active']
