@@ -1,1 +1,133 @@
+{% extends 'parent/base.html' %}
+{% load blog_tags %}
+{% block title %}post number{% endblock %}
+{% block content %}
+{% load static %}
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+    body {
+        margin: 0;
+        font-size: 20px;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      
+      #navbar {
+        overflow: hidden;
+        background-color: #333f;
+      }
+      
+      #navbar a {
+        float: left;
+        display: block;
+        color: #f2f2f2;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+        font-size: 17px;
+      }
+      
+      #navbar a:hover {
+        background-color: #ddd;
+        color: black;
+      }
+      
+      #navbar a.active {
+        background-color: #04AA6D;
+        color: white;
+      }
+      
+      .content {
+        padding: 16px;
+      }
+      
+      .sticky {
+        position: fixed;
+        top: 0;
+        width: 100%;
+      }
+      
+      .sticky + .content {
+        padding-top: 60px;
+      }
+</style>
+</head>
+<body>
 
+
+<div id="navbar">
+  <a class="active" href="/blog/">Home</a>
+  <a href="/blog/posts/">Postlist</a>
+  <a href="/blog/ticket">Ticket</a>
+  <a href="/blog/postform">Postform</a>
+  <a href="/blog/login/">Loginform</a>
+  <a href="/blog/profile/">Profileform</a>
+</div>
+
+<script>
+window.onscroll = function() {myFunction()};
+
+var navbar = document.getElementById("navbar");
+var sticky = navbar.offsetTop;
+
+function myFunction() {
+  if (window.pageYOffset >= sticky) {
+    navbar.classList.add("sticky")
+  } else {
+    navbar.classList.remove("sticky");
+  }
+}
+</script>
+
+</body>
+</html>
+
+</body>
+</html> 
+<img src="{% static 'images/tech.jpg' %}" alt='technology photo' width='600' height='500' align='right'>
+
+<br>
+<br>
+    <h2>آمار سایت</h2>
+    <p> {% tp %} :تعداد پست</p>
+    <p> {% total_comments %} :تعداد کامنت</p>
+    <p> {% last_post_date %} :تاریخ اولین پست</p>
+    <p> {% total_ticket_enteqad %} :تعداد تیکت های انتقادی</p>
+    <p> {% ttg %} :تعداد تیکت های گزارشی</p>
+    <p> {% ttp %} :تعداد تیکت های پیشنهادی</p>
+    <p> {% rp %} :تعداد پست های ردشده</p>
+    <p> {% tl %} :تعداد لاگ این ها </p>
+    <p> {% nl %} :تعداد لاگ این های غیر فعال</p>
+    <p> {% lld %} :آخرین لاگ این غیر فعال</p>
+    <p> {% total_profile %} :تعداد پروفایل ها</p>
+
+    
+    {% latest_post 3 %}
+
+    <h2>محبوب ترین پست ها</h2>
+    {% most_popular_posts 3 as pop_posts %}
+    {% for post in pop_posts %}
+        <br>
+        <a href="{{ post.get_absolute_url }}">{{ post.title }}: with {{ post.comments_count }} comments </a>
+    {% endfor %}
+
+    <h2>محبوب ترین نویسنده ها</h2>
+    {% most_popular_author as pop %}
+    {% for post in pop %}
+        <br>
+        <a href="{{ post.get_absolute_url }}">{{ post.author }}: with {{ post.title }} </a>
+    {% endfor %}
+    <br>
+    <h2>پست ها</h2>
+    {% for post in pop %}
+        <br>
+        <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+    {% endfor %}
+    
+
+{% endblock %}
