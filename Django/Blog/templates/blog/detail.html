@@ -39,9 +39,4 @@
         <input type="submit" value="احذف پست">
     </form>
 
-    <form method="post" action="{% url 'blog:delete_comment' post.id %}">
-        {% csrf_token %}
-        <input type="submit" value="حذف کامنت">
-    </form>
-
 {% endblock %}
