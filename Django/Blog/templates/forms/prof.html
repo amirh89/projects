@@ -1,0 +1,33 @@
+{% extends 'parent/base.html' %}
+{% block title %}profile form{% endblock %}
+ 
+{% block content %}
+
+    <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="افزودن پروفایل">
+
+    </form>
+
+
+    {% if form.errors %}
+       لطفا خطاهای زیر را اصلاح کنید
+       <br>
+       {% for field in form  %}
+            {% if field.errors %}
+                {% for error in field.errors %} 
+                {{ field.label }} : {{ error }}
+                {% endfor %}
+            {% endif %}
+       {% endfor %}
+    {% endif %}
+
+    {% if form.non_field_errors %}
+       {{ form.non_field_errors }}
+    {% endif %}
+
+    <a href='/blog/' align='left'><h2> Home </h2></a><p> if you don't want to create a profile, click on Home </p>
+
+    
+{% endblock %}
