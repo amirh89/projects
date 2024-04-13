@@ -14,4 +14,6 @@ urlpatterns = [
     path('counter/counter', views.counter, name='counter'),
     path('translation/', views.translate, name='translate'),
     path('profile/', views.profile, name='profile'),
+    path('posts/<int:id>/delete_post', views.delete_post, name='delete_post'),
+    path('posts/<int:id>/edit_post', views.edit_post, name='edit_post'),
 ]
