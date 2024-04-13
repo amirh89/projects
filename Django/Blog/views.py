@@ -137,3 +137,25 @@ def profile(request):
     else:
         form = ProfileForm()
     return render(request, 'forms/prof.html', {'form':form})
+    
+def delete_post(request, id):
+    post = Post.objects.filter(id=id)
+    post.delete()
+    return redirect('blog:index')
+
+def edit_post(request, id):
+    post = get_object_or_404(Post, id=id)
+
+    if request.method == 'GET':
+        context = {'form': PostForm(instance=post), 'id': id}
+        return render(request,'forms/edit_post.html',context)
+    
+    elif request.method == 'POST':
+        form = PostForm(request.POST, instance=post)
+        if form.is_valid():
+            form.save()
+            return redirect('blog:index')
+        else:
+            return HttpResponse(request, "The post couldn't updated ")
+        
+    return render(request,'forms/edit_post.html',{'form':form})
