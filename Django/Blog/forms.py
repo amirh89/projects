@@ -1,5 +1,5 @@
 from django import forms
-from .models import Comment
+from .models import *
 from django.utils import timezone
 from django.contrib.auth.models import User
 
