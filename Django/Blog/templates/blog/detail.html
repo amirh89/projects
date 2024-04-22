@@ -38,10 +38,20 @@
         {% csrf_token %}
         <input type="submit" value="احذف پست">
     </form>
-
-    <form method="post" action="{% url 'blog:edit_post' post.id %}">
+    
+    <form method="get" action="{% url 'blog:edit_post' post.id %}">
         {% csrf_token %}
         <input type="submit" value="ویرایش پست">
     </form> 
+
+    <form method="get" action="{% url 'blog:edit_comment' post.id %}">
+        {% csrf_token %}
+        <input type="submit" value="ویرایش کامنت">
+    </form> 
+
+    <form method='post' action="{% url 'blog:delete_comment' post.id  %}">
+        {% csrf_token %}
+        <input type='submit' value='حذف کامنت'>
+    </form>
 
 {% endblock %}
