@@ -1,16 +1,18 @@
-from django.shortcuts import render, get_object_or_404, redirect, HttpResponseRedirect
-from django.http import HttpResponse, Http404
+from django.shortcuts import *
+from django.http import *
 from .models import *
 from .forms import *
-#from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.views.generic import ListView, DetailView
-from django.views.decorators.http import require_POST
+from django.core.paginator import *
+from django.views.generic import *
+from django.views.decorators.http import *
+from django.views.decorators.csrf import *
 from translate import Translator
 
 # Create your views here.
 
 def index(request):
     return render(request, 'blog/index.html')
+
 
 class PostListView(ListView):
     queryset = Post.published.all()
@@ -33,7 +35,6 @@ def post_detail(request, pk):
     return render(request, "blog/detail.html", context)
 
 
-
 def ticket(request):
     if request.method == 'POST':
         form = TicketForm(request.POST)
@@ -50,6 +51,7 @@ def ticket(request):
     else:
         form = TicketForm()
     return render(request, 'forms/ticket.html', {'form':form})
+
 
 def post_form(request):
     if request.method == 'POST':
@@ -68,6 +70,7 @@ def post_form(request):
         form = PostForm()
     return render(request, 'forms/postform.html', {'form':form})
     
+
 @require_POST
 def post_comment(request, post_id):
     post = get_object_or_404(Post, id=post_id, status=Post.Status.PUBLISHED)
@@ -84,6 +87,7 @@ def post_comment(request, post_id):
     }
     return render(request, 'forms/comment.html', context)
 
+
 def login_form(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -99,6 +103,7 @@ def login_form(request):
         form = LoginForm()
     return render(request, 'forms/login.html', {'form':form})
 
+
 def counter(request):
     if request.method == 'POST':
         text = request.POST['texttocount']
@@ -112,6 +117,7 @@ def counter(request):
     else:
         return render(request, 'forms/counter.html', {'on':'active'})
     
+
 def translate(request):
     if request.method == 'POST':
         text = request.POST['translate']
@@ -120,6 +126,7 @@ def translate(request):
         translation = translator.translate(text)
         return HttpResponse(translation)
     return render(request, 'forms/translate.html')
+
 
 def profile(request):
     if request.method == 'POST':
@@ -138,10 +145,18 @@ def profile(request):
         form = ProfileForm()
     return render(request, 'forms/prof.html', {'form':form})
     
+
 def delete_post(request, id):
     post = Post.objects.filter(id=id)
     post.delete()
     return redirect('blog:index')
+
+
+def delete_comment(request, id):
+    comment = Comment.objects.filter(post=id)
+    comment.delete()
+    return redirect('blog:post_list')
+
 
 def edit_post(request, id):
     post = get_object_or_404(Post, id=id)
@@ -154,8 +169,26 @@ def edit_post(request, id):
         form = PostForm(request.POST, instance=post)
         if form.is_valid():
             form.save()
-            return redirect('blog:index')
+            return HttpResponse(request, "The post updated ")
         else:
-            return HttpResponse(request, "The post couldn't updated ")
+            return HttpResponse(request, "The post couldn't update ")
         
     return render(request,'forms/edit_post.html',{'form':form})
+
+
+def edit_comment(request, id):
+    comment = get_object_or_404(Comment, post=id)
+
+    if request.method == 'GET':
+        context = {'form': CommentForm(instance=comment), 'id':id}
+        return render(request, 'forms/edit_comment.html', context)
+    
+    elif request.method == 'POST':
+        form = CommentForm(request.POST, instance=comment)
+        if form.is_valid():
+            form.save()
+            return redirect('blog:index')
+    else:
+        form = CommentForm()
+        
+    return render(request, 'forms/edit_comment.html', {'form': form})
