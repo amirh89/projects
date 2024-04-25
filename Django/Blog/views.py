@@ -192,3 +192,12 @@ def edit_comment(request, id):
         form = CommentForm()
         
     return render(request, 'forms/edit_comment.html', {'form': form})
+
+
+def fl_testing(request):
+    data = Post.objects.filter(author__in=['1','2']).values()
+    template = loader.get_template('forms/fl.html')
+    context = {
+        'data': data,
+    }
+    return HttpResponse(template.render(context, request))
