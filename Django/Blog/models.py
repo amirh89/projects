@@ -3,6 +3,7 @@ from django.db.models.query import QuerySet
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.contrib.postgres.search import *
 
 # Managers
 class PublishedManager(models.Manager):
@@ -74,7 +75,7 @@ class Comment(models.Model):
     body = models.TextField(verbose_name='متن کامنت')
     created = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ ایجاد')
     updated = models.DateTimeField(auto_now=True, verbose_name='تاریخ ویرایش')
-    active = models.BooleanField(default=False, verbose_name='وضعیت')
+    active = models.BooleanField(default=True, verbose_name='وضعیت')
 
 
     class Meta:
@@ -84,6 +85,29 @@ class Comment(models.Model):
         ]
         verbose_name = 'کامنت'
         verbose_name_plural = 'کامنت ها'
+
+
+    def __str__(self):
+        return f'{self.name} : {self.post}'
+    
+    
+    def get_absolute_url_5(self):
+        return reverse("blog:edit_comment", args=[self.post.id, self.id])
+    
+class Like(models.Model):
+    post = models.ForeignKey(Post, on_delete = models.CASCADE, related_name='likes', verbose_name='پست')
+    name = models.CharField(max_length=250, verbose_name='نام')
+    created = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ ایجاد')
+    updated = models.DateTimeField(auto_now=True, verbose_name='تاریخ ویرایش')
+    active = models.BooleanField(default=True, verbose_name='وضعیت')
+
+    class Meta:
+        ordering = ['updated']
+        indexes = [
+            models.Index(fields=['updated'])
+        ]
+        verbose_name = 'لایک'
+        verbose_name_plural = 'لایک ها'
 
 
     def __str__(self):
@@ -108,6 +132,10 @@ class Login(models.Model):
     def __str__(self):
         return f'{self.password}'
     
+    def get_absolute_url_2(self):
+        return reverse("blog:logout", args=[self.id])
+    
+    
 class Profile(models.Model):
     full_name = models.CharField(max_length=200, verbose_name='نام و نام خانوادگی')
     phone_number = models.IntegerField(verbose_name='شماره موبایل')
@@ -127,3 +155,11 @@ class Profile(models.Model):
 
     def __str__(self):
         return f'{self.full_name}'
+    
+
+    def get_absolute_url_3(self):
+        return reverse("blog:profile_detail", args=[self.id])
+    
+    
+    def get_absolute_url_4(self):
+        return reverse("blog:edit_profile", args=[self.id])
