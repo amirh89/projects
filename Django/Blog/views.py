@@ -6,6 +6,7 @@ from django.core.paginator import *
 from django.views.generic import *
 from django.views.decorators.http import *
 from django.views.decorators.csrf import *
+from django.template import loader
 from translate import Translator
 
 # Create your views here.
@@ -88,6 +89,23 @@ def post_comment(request, post_id):
     return render(request, 'forms/comment.html', context)
 
 
+@require_POST
+def post_like(request, post_id):
+    post = get_object_or_404(Post, id=post_id, status=Post.Status.PUBLISHED)
+    like = None
+    form = LikeForm(data=request.POST)
+    if form.is_valid():
+        like = form.save(commit=False)
+        like.post = post
+        like.save()
+    context = {
+        'post':post,
+        'form':form,
+        'like':like,
+    }
+    return render(request, 'forms/like.html', context)
+
+
 def login_form(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -98,10 +116,16 @@ def login_form(request):
                 username = cd['username'],
             )
             login_obj.save()
-            return redirect('blog:index')
+            return HttpResponse("hi!. You loged in")
     else:
         form = LoginForm()
     return render(request, 'forms/login.html', {'form':form})
+
+
+def logout_form(request, id):
+    logout = Login.objects.filter(id=id)
+    logout.delete()
+    return render(request, 'forms/logout.html')
 
 
 def counter(request):
@@ -128,9 +152,11 @@ def translate(request):
     return render(request, 'forms/translate.html')
 
 
-def profile(request):
+def profile(request, pk):
+    profile = Profile.objects.get(id=pk)
+
     if request.method == 'POST':
-        form = ProfileForm(request.POST)
+        form = ProfileForm2(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
             pro_obj = Profile.objects.create(
@@ -140,14 +166,50 @@ def profile(request):
                 bio = cd['bio'],
             )
             pro_obj.save()
-            return redirect('blog:index')
+            return redirect(profile.get_absolute_url_3())
     else:
-        form = ProfileForm()
+        form = ProfileForm2()
     return render(request, 'forms/prof.html', {'form':form})
-    
 
-def delete_post(request, id):
-    post = Post.objects.filter(id=id)
+def profile_detail(request, pk):
+    profile = get_object_or_404(Profile, id=pk)
+    form = ProfileForm2()
+    context = {
+        'profile':profile,
+        'form':form,
+    }
+    return render(request, 'forms/profile_detail.html', context)
+
+
+def delete_profile(request, pk):
+    profile = Profile.objects.filter(id=pk)
+    profile.delete()
+    return redirect('blog:index')
+
+
+def edit_profile(request, id):
+    profile = get_object_or_404(Profile, id=id)
+
+    if request.method == 'GET':
+        context = {
+            'form':ProfileForm(instance=profile),
+            'id':id,
+        }
+        return render(request, 'forms/edit_profile.html', context)
+    
+    elif request.method == 'POST':
+        form = ProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect(profile.get_absolute_url_3())
+        else:
+           form = ProfileForm()
+
+    return render(request, 'forms/edit_profile.html', {'form':form})
+
+
+def delete_post(request, pk):
+    post = Post.objects.filter(id=pk)
     post.delete()
     return redirect('blog:index')
 
@@ -163,7 +225,7 @@ def edit_post(request, id):
 
     if request.method == 'GET':
         context = {'form': PostForm(instance=post), 'id': id}
-        return render(request,'forms/edit_post.html',context)
+        return render(request, 'forms/edit_post.html', context)
     
     elif request.method == 'POST':
         form = PostForm(request.POST, instance=post)
@@ -176,22 +238,23 @@ def edit_post(request, id):
     return render(request,'forms/edit_post.html',{'form':form})
 
 
-def edit_comment(request, id):
-    comment = get_object_or_404(Comment, post=id)
+def edit_comment(request, id, comment_id):
+    comment = get_object_or_404(Comment, post=id, id=comment_id)
+    post = Post.objects.get(id=id)
 
     if request.method == 'GET':
-        context = {'form': CommentForm(instance=comment), 'id':id}
+        context = {'form': CommentForm(instance=comment), 'comment_id':id}
         return render(request, 'forms/edit_comment.html', context)
     
     elif request.method == 'POST':
         form = CommentForm(request.POST, instance=comment)
         if form.is_valid():
             form.save()
-            return redirect('blog:index')
+            return redirect(post.get_absolute_url())
     else:
         form = CommentForm()
         
-    return render(request, 'forms/edit_comment.html', {'form': form})
+    return render(request, 'forms/edit_comment.html', {'form':form})
 
 
 def fl_testing(request):
