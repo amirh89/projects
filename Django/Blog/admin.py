@@ -44,3 +44,10 @@ class ProfileAdmin(admin.ModelAdmin):
     list_filter = ['active','created','updated']
     search_fields = ['full_name','bio']
     list_editable = ['active']
+
+@admin.register(Like)
+class LikeAdmin(admin.ModelAdmin):
+    list_display = ['name','post','updated','active']
+    list_filter = ['active','created','updated']
+    search_fields = ['name','post']
+    list_editable = ['active']
