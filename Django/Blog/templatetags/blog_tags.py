@@ -85,3 +85,7 @@ def to_markdown(text):
 @register.simple_tag
 def total_profile():
     return Profile.objects.filter(active=True).annotate(full_name_count=Count('full_name'))
+
+@register.simple_tag
+def total_like():
+    return Like.objects.filter(active=True).annotate(name_count=Count('name')).order_by('-name_count')
