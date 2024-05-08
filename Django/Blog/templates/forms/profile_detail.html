@@ -1,0 +1,25 @@
+{% extends 'parent/base.html' %}
+{% load blog_tags %}
+{% block title %}profile detail{% endblock %}
+
+{% block content %}
+    <h1>profile detail</h1>
+    <h2>{{ profile.full_name }} (is {{ profile.age }} years old)</h2>
+    <p>bio:{{ profile.bio | markdown }}</p>
+    <hr>
+    <p>phone_number:
+        {{ profile.phone_number }}</p>
+    <hr>
+    <p>last_update_time: {{ profile.updated | date:'r'}}</p>
+     
+    <hr>
+    <form method='post' action="{% url 'blog:delete_profile' profile.id %}">
+    {% csrf_token %}
+    <input type='submit' value='حذف پروفایل'>
+    <form>
+
+    <hr>
+
+    <a href="{{ profile.get_absolute_url_4 }}">ویرایش پروفایل</a>
+
+{% endblock %}
