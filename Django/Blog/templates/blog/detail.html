@@ -18,36 +18,51 @@
 
     <div>
     {% for cm in comments %}
-        {{ cm.body|linebreaks }}
+        "{{ cm.body }}" from {{ cm.name }}
+        <a href="{{ cm.get_absolute_url_5 }}">editing comment
+        </a> 
         <br>
-        {{ cm.name }}
+
     {% empty %}
         !کامنتی وجود ندارد
     {% endfor %}
     </div>
     {% endwith %}
-
+    <hr>
 
     <form method="post" action="{% url 'blog:post_comment' post.id %}">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="افزودن کامنت">
     </form>
+    <hr>
+  
+    <div>
+        {% total_like as lk %}
+        {% for like in lk %}
+            <br>
+            <a href="#">{{ like.name }} liked {{ like.post }}</a>
+        {% endfor %}
+    
+    </div>
+
+    <form method="post" action="{% url 'blog:post_like' post.id %}">
+        {% csrf_token %}
+        <input type="submit" value="لایک کردن">
+    </form>  
+    <hr>
 
     <form method="post" action="{% url 'blog:delete_post' post.id %}">
         {% csrf_token %}
         <input type="submit" value="احذف پست">
     </form>
-    
+    <hr>
+
     <form method="get" action="{% url 'blog:edit_post' post.id %}">
         {% csrf_token %}
         <input type="submit" value="ویرایش پست">
     </form> 
-
-    <form method="get" action="{% url 'blog:edit_comment' post.id %}">
-        {% csrf_token %}
-        <input type="submit" value="ویرایش کامنت">
-    </form> 
+    <hr>
 
     <form method='post' action="{% url 'blog:delete_comment' post.id  %}">
         {% csrf_token %}
