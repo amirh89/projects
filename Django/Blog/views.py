@@ -22,7 +22,37 @@ class PostListView(ListView):
     template_name = 'blog/list.html'
 
 
-import datetime
+class FavoritePostsView(ListView):
+    queryset = Favorits.objects.all()
+    context_object_name = 'favorites'
+    paginate_by = 3
+    template_name = 'blog/favorites.html'
+
+
+def add_to_favorites(request):
+    if request.method == 'POST':
+        form = FavoriteForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            favorite = Favorits.objects.create(
+                post = cd['post'],
+                user = request.user,
+            )
+            favorite.save()
+            return redirect('blog:favorites_list')
+    else:
+        form = FavoriteForm()
+    
+    return render(request, 'forms/add_to_fav.html', {"form":form})
+
+
+def remove_from_favorites(request, id):
+    post = Favorits.objects.filter(id=id)
+    post.delete()
+    return redirect('blog:favorites_list')
+
+
+import datetime 
 def post_detail(request, pk):
     post = get_object_or_404(Post, id=pk, status=Post.Status.PUBLISHED)
     comments = post.comments.filter(active=True)
@@ -70,6 +100,30 @@ def post_form(request):
     else:
         form = PostForm()
     return render(request, 'forms/postform.html', {'form':form})
+
+
+def delete_post(request, pk):
+    post = Post.objects.filter(id=pk)
+    post.delete()
+    return redirect('blog:index')
+
+
+def edit_post(request, id):
+    post = get_object_or_404(Post, id=id)
+
+    if request.method == 'GET':
+        context = {'form': PostForm(instance=post), 'id': id}
+        return render(request, 'forms/edit_post.html', context)
+    
+    elif request.method == 'POST':
+        form = PostForm(request.POST, instance=post)
+        if form.is_valid():
+            form.save()
+            return HttpResponse(request, "The post updated ")
+        else:
+            return HttpResponse(request, "The post couldn't update ")
+        
+    return render(request,'forms/edit_post.html',{'form':form})
     
 
 @require_POST
@@ -87,6 +141,31 @@ def post_comment(request, post_id):
         'comment' : comment,
     }
     return render(request, 'forms/comment.html', context)
+
+
+def delete_comment(request, id):
+    comment = Comment.objects.filter(post=id)
+    comment.delete()
+    return redirect('blog:post_list')
+
+
+def edit_comment(request, id, comment_id):
+    comment = get_object_or_404(Comment, post=id, id=comment_id)
+    post = Post.objects.get(id=id)
+
+    if request.method == 'GET':
+        context = {'form': CommentForm(instance=comment), 'comment_id':id}
+        return render(request, 'forms/edit_comment.html', context)
+    
+    elif request.method == 'POST':
+        form = CommentForm(request.POST, instance=comment)
+        if form.is_valid():
+            form.save()
+            return redirect(post.get_absolute_url())
+    else:
+        form = CommentForm()
+        
+    return render(request, 'forms/edit_comment.html', {'form':form})
 
 
 @require_POST
@@ -128,35 +207,9 @@ def logout_form(request, id):
     return render(request, 'forms/logout.html')
 
 
-def counter(request):
+def profile(request):
     if request.method == 'POST':
-        text = request.POST['texttocount']
-        if text != '':
-            word = len(text.split())
-            i = True
-            return render(request, 'forms/counter.html',
-                          {'word': word, 'text' : text, 'i' : i, 'on':'active'})
-        else:
-            return render(request, 'forms/counter.html', {'on':'active'})
-    else:
-        return render(request, 'forms/counter.html', {'on':'active'})
-    
-
-def translate(request):
-    if request.method == 'POST':
-        text = request.POST['translate']
-        language = request.POST['language']
-        translator = Translator(to_lang=language)
-        translation = translator.translate(text)
-        return HttpResponse(translation)
-    return render(request, 'forms/translate.html')
-
-
-def profile(request, pk):
-    profile = Profile.objects.get(id=pk)
-
-    if request.method == 'POST':
-        form = ProfileForm2(request.POST)
+        form = ProfileForm2(request.POST, request.FILES)
         if form.is_valid():
             cd = form.cleaned_data
             pro_obj = Profile.objects.create(
@@ -164,12 +217,14 @@ def profile(request, pk):
                 phone_number = cd['phone_number'],
                 age = cd['age'],
                 bio = cd['bio'],
+                image = cd['image'],
             )
             pro_obj.save()
-            return redirect(profile.get_absolute_url_3())
+            return redirect('blog:index')
     else:
         form = ProfileForm2()
     return render(request, 'forms/prof.html', {'form':form})
+
 
 def profile_detail(request, pk):
     profile = get_object_or_404(Profile, id=pk)
@@ -208,55 +263,6 @@ def edit_profile(request, id):
     return render(request, 'forms/edit_profile.html', {'form':form})
 
 
-def delete_post(request, pk):
-    post = Post.objects.filter(id=pk)
-    post.delete()
-    return redirect('blog:index')
-
-
-def delete_comment(request, id):
-    comment = Comment.objects.filter(post=id)
-    comment.delete()
-    return redirect('blog:post_list')
-
-
-def edit_post(request, id):
-    post = get_object_or_404(Post, id=id)
-
-    if request.method == 'GET':
-        context = {'form': PostForm(instance=post), 'id': id}
-        return render(request, 'forms/edit_post.html', context)
-    
-    elif request.method == 'POST':
-        form = PostForm(request.POST, instance=post)
-        if form.is_valid():
-            form.save()
-            return HttpResponse(request, "The post updated ")
-        else:
-            return HttpResponse(request, "The post couldn't update ")
-        
-    return render(request,'forms/edit_post.html',{'form':form})
-
-
-def edit_comment(request, id, comment_id):
-    comment = get_object_or_404(Comment, post=id, id=comment_id)
-    post = Post.objects.get(id=id)
-
-    if request.method == 'GET':
-        context = {'form': CommentForm(instance=comment), 'comment_id':id}
-        return render(request, 'forms/edit_comment.html', context)
-    
-    elif request.method == 'POST':
-        form = CommentForm(request.POST, instance=comment)
-        if form.is_valid():
-            form.save()
-            return redirect(post.get_absolute_url())
-    else:
-        form = CommentForm()
-        
-    return render(request, 'forms/edit_comment.html', {'form':form})
-
-
 def fl_testing(request):
     data = Post.objects.filter(author__in=['1','2']).values()
     template = loader.get_template('forms/fl.html')
@@ -264,3 +270,26 @@ def fl_testing(request):
         'data': data,
     }
     return HttpResponse(template.render(context, request))
+
+def counter(request):
+    if request.method == 'POST':
+        text = request.POST['texttocount']
+        if text != '':
+            word = len(text.split())
+            i = True
+            return render(request, 'forms/counter.html',
+                          {'word': word, 'text' : text, 'i' : i, 'on':'active'})
+        else:
+            return render(request, 'forms/counter.html', {'on':'active'})
+    else:
+        return render(request, 'forms/counter.html', {'on':'active'})
+    
+
+def translate(request):
+    if request.method == 'POST':
+        text = request.POST['translate']
+        language = request.POST['language']
+        translator = Translator(to_lang=language)
+        translation = translator.translate(text)
+        return HttpResponse(translation)
+    return render(request, 'forms/translate.html')
