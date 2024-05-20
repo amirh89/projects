@@ -113,7 +113,29 @@ class Like(models.Model):
     def __str__(self):
         return f'{self.name} : {self.post}'
     
+class Favorits(models.Model):
+    post = models.ForeignKey(Post, related_name = 'favorites', on_delete=models.CASCADE, verbose_name='پست')
+    user = models.ForeignKey(User, on_delete = models.CASCADE, verbose_name='کاربر', default=2)
+    created = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ ایجاد')
+    updated = models.DateTimeField(auto_now=True, verbose_name='تاریخ ویرایش')
 
+    class Meta:
+        ordering = ['updated']
+        indexes = [
+            models.Index(fields=['updated'])
+        ]
+
+        verbose_name = 'علاقه مندی'
+        verbose_name_plural = 'علاقه مندی ها'
+
+
+    def __str__(self) :
+        return f'{self.post}'
+
+
+    def get_absolute_url(self):
+        return reverse("blog:post_detail", args=[self.post.id])
+    
 class Login(models.Model):
     password = models.CharField(max_length=200, verbose_name='پسوورد')
     username = models.CharField(max_length=300 ,verbose_name='اسم کاربر')
@@ -141,6 +163,7 @@ class Profile(models.Model):
     phone_number = models.IntegerField(verbose_name='شماره موبایل')
     age = models.IntegerField(verbose_name='سن')
     bio = models.CharField(max_length=300, verbose_name='بیو')
+    image = models.ImageField(upload_to='static/images', verbose_name='تصویر', default='static/images/tech.jpg')
     created = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ ایجاد')
     updated = models.DateTimeField(auto_now=True, verbose_name='تاریخ ویرایش')
     active = models.BooleanField(default=True, verbose_name='فعالیت')
@@ -163,3 +186,4 @@ class Profile(models.Model):
     
     def get_absolute_url_4(self):
         return reverse("blog:edit_profile", args=[self.id])
+    
