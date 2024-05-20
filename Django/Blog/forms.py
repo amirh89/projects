@@ -51,16 +51,6 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ['author','title','description','reading_time','vahed']
-    # VAHED_CHOICES=(
-    #     ('ثانیه','ثانیه'),
-    #     ('دقیقه','دقیقه'),
-    #     ('ساعت','ساعت'),
-    # )
-    # author = forms.CharField(required=True, widget=forms.TextInput(attrs={'placeholder':'نویسنده', 'class':'auth'}))
-    # title = forms.CharField(max_length=350, widget=forms.TextInput(attrs={'placeholder':'عنوان', 'style':'height:50px;'}))
-    # description = forms.CharField(widget=forms.Textarea)
-    # reading_time = forms.IntegerField(max_value=999)
-    # vahed = forms.ChoiceField(choices=VAHED_CHOICES)
 
 class LoginForm(forms.Form):
     password = forms.IntegerField(max_value=999999, required=True, widget=forms.TextInput(attrs={'placeholder':'باید شش رقمی باشد','class':'psw'}))
@@ -77,7 +67,7 @@ class LoginForm(forms.Form):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['full_name','phone_number','age','bio']
+        fields = ['full_name','phone_number','age','bio','image']
 
     
 class ProfileForm2(forms.Form):
@@ -85,9 +75,16 @@ class ProfileForm2(forms.Form):
     phone_number = forms.IntegerField(required=True, widget=forms.TextInput(attrs={'placeholder':'با 09 شروع کنید'}))
     age = forms.IntegerField(required=True)
     bio = forms.CharField(required=False)
+    image = forms.ImageField(required=False)
 
 
 class LikeForm(forms.ModelForm):
     class Meta:
         model = Like
         fields = ['name','active']
+
+
+class FavoriteForm(forms.ModelForm):
+    class Meta:
+        model = Favorits
+        fields = ['post','user']
