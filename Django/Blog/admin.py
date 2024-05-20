@@ -16,6 +16,7 @@ class PostAdmin(admin.ModelAdmin):
     date_hierarchy = 'publish'
     prepopulated_fields = {'slug' : ['title']}
     list_editable = ['status']
+    #list_display_links = ['author']
 
 
 @admin.register(Ticket)
@@ -38,12 +39,13 @@ class LoginAdmin(admin.ModelAdmin):
     list_display_links = ['created']
     list_editable = ['active']
 
-@admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ['full_name','age','bio','active']
     list_filter = ['active','created','updated']
     search_fields = ['full_name','bio']
     list_editable = ['active']
+
+admin.site.register(Profile, ProfileAdmin)
 
 @admin.register(Like)
 class LikeAdmin(admin.ModelAdmin):
@@ -51,3 +53,9 @@ class LikeAdmin(admin.ModelAdmin):
     list_filter = ['active','created','updated']
     search_fields = ['name','post']
     list_editable = ['active']
+
+@admin.register(Favorits)
+class FavoritesAdmin(admin.ModelAdmin):
+    list_display = ['post','user','created','updated']
+    list_filter = ['user']
+    search_fields = ['post']
