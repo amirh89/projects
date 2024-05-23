@@ -1,0 +1,27 @@
+{% extends 'parent/base.html' %}
+{% load blog_tags %}
+{% block title %}favorites list{% endblock %}
+{% block content %}
+    <h1>favorites list</h1>
+
+     <a href='/blog/' align='right' backgroundcolor='blue'><h3> Home </h3></a> 
+
+<ol style="--length: {{ favorites | length }}" role="list">
+    {% for favorite in favorites %}
+        <li style="--i: {{ forloop.counter }}">   
+        <h3>
+        <a href="{{ favorite.get_absolute_url }}">{{ favorite.post }}</a><hr>
+
+        <form method="post"action="{% url 'blog:re_favorites' favorite.id %}">
+            {% csrf_token %}
+            <input type="submit" value="حذف از علاقه مندی ها">
+        </form>
+
+        </h3>
+        <p>added by {{ favorite.user }} in: {{ favorite.created | date:'r' }}</p>
+        </li>
+    {% endfor %}
+</ol>
+
+    {% include "partials/pagination.html" with page=page_obj %}
+{% endblock %}
