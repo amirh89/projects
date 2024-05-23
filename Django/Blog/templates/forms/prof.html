@@ -3,10 +3,11 @@
  
 {% block content %}
 
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="افزودن پروفایل">
+    <h4>Your image should be jpg or png</h4>
 
     </form>
 
@@ -23,11 +24,10 @@
        {% endfor %}
     {% endif %}
 
-    {% if form.non_field_errors %}
-       {{ form.non_field_errors }}
-    {% endif %}
+       {% if form.non_field_errors %}
+            {{ form.non_field_errors }}
+       {% endif %}
 
     <a href='/blog/' align='left'><h2> Home </h2></a><p> if you don't want to create a profile, click on Home </p>
 
-    
 {% endblock %}
