@@ -94,7 +94,8 @@ def post_form(request):
                 title=cd['title'],
                 description=cd['description'],
                 reading_time=cd['reading_time'],
-                vahed=cd['vahed'])
+                vahed=cd['vahed'],
+                video = cd['video'])
             ticket_obj.save()
             return redirect('blog:index')
     else:
