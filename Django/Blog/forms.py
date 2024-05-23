@@ -50,7 +50,8 @@ class CommentForm(forms.ModelForm):
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['author','title','description','reading_time','vahed']
+        fields = ['author','title','description','reading_time','vahed','video']
+    video = forms.FileField(required=False)
 
 class LoginForm(forms.Form):
     password = forms.IntegerField(max_value=999999, required=True, widget=forms.TextInput(attrs={'placeholder':'باید شش رقمی باشد','class':'psw'}))
