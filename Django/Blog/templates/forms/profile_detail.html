@@ -1,10 +1,18 @@
 {% extends 'parent/base.html' %}
 {% load blog_tags %}
+{% load static %}
 {% block title %}profile detail{% endblock %}
 
 {% block content %}
     <h1>profile detail</h1>
     <h2>{{ profile.full_name }} (is {{ profile.age }} years old)</h2>
+
+    {% if profile.image %}
+    Your image:  <img src="{{ MEDIA_URL }}{{ profile.image.url }}" alt='Your image'/>
+    {% else %}
+    Default image:   <img src="{{ MEDIA_URL }}{% static "images/default.jpg" %}"  width='300px' alt='mountain'/>
+    {% endif %}
+        <hr>
     <p>bio:{{ profile.bio | markdown }}</p>
     <hr>
     <p>phone_number:
