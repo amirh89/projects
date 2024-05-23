@@ -32,6 +32,7 @@ class Post(models.Model):
     status = models.CharField(max_length=2, default=Status.PUBLISHED, choices=Status.choices, verbose_name='وضعیت')
     reading_time = models.PositiveIntegerField(verbose_name='زمان مطالعه')
     vahed = models.CharField(max_length=250, verbose_name='واحد اندازه گیری')
+    video = models.FileField(upload_to='static/videos', verbose_name='ویدیو', default=None)
 
     objects = models.Manager()
     published = PublishedManager()
