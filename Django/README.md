@@ -1,5 +1,5 @@
 Hello
 
-This is my django project called Blog.
+These are my django projects called Blog and On_store.
 
-I wrote a lot of code in this project.
+I wrote a lot of code in these projects.
