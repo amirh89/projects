@@ -89,14 +89,14 @@ def post_form(request):
         form = PostForm(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
-            ticket_obj = Post.objects.create(
+            post_obj = Post.objects.create(
                 author=request.user,
                 title=cd['title'],
                 description=cd['description'],
                 reading_time=cd['reading_time'],
                 vahed=cd['vahed'],
                 video = cd['video'])
-            ticket_obj.save()
+            post_obj.save()
             return redirect('blog:index')
     else:
         form = PostForm()
