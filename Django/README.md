@@ -1,3 +1,3 @@
 Hello
 
-These are my django projects called Blog and On_store.
+This is my first django project called On_store.
