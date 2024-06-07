@@ -1,8 +1,10 @@
+from typing import Any
 from django.db import models
 from django.db.models.query import QuerySet
 from django.contrib.auth.models import User
 from django.utils import timezone
 import datetime
+from django.urls import reverse
 
 # Create your models here.
 
@@ -40,44 +42,28 @@ class Customer(models.Model):
         self.save()
     
 
-    @staticmethod
-    def get_customer_by_email(email):
-        try:
-            return Customer.objects.get(email=email)
-        except:
-            return False
-        
-    def isExists(self):
-        if Customer.objects.filter(email=self.email):
-            return True
-        
-        return False
+    def __str__(self):
+        return self.last_name
     
 class Product(models.Model):
     name = models.CharField(max_length=100)
     price = models.IntegerField(default=0)
     category = models.ForeignKey(Category, on_delete = models.CASCADE, default=1)
     description = models.CharField(max_length=300, default='', null=True, blank=True)
-    imagge = models.ImageField(upload_to='static/iamges', default=None)
+    image = models.ImageField(upload_to='static/images', default=None, null=True, blank=True)
      
     class Meta:
         verbose_name = 'product'
         verbose_name_plural = 'products'
 
-    @staticmethod
-    def get_products_by_id(ids):
-        return Product.objects.filter(id__in=ids)
+
+    def get_absolute_url(self):
+        return reverse("store:product_detail", args=[self.id])
     
-    @staticmethod
-    def get_all_products():
-        return Product.objects.all()
+
+    def __str__(self):
+        return self.name
     
-    @staticmethod
-    def get_all_products_by_category_id(category_id):
-        if category_id:
-            return Product.objects.filter(category = category_id)
-        else:
-            return Product.get_all_products()
         
 class Order(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -99,3 +85,6 @@ class Order(models.Model):
     @staticmethod
     def get_order_by_customer(customer_id):
         return Order.objects.filter(customer=customer_id).order_by('-date')
+    
+class Search(models.Model):
+    query = models.ForeignKey(Product, on_delete=models.CASCADE)
