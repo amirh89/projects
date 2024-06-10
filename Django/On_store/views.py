@@ -4,6 +4,7 @@ from .models import *
 from .forms import *
 from django.views.generic import ListView
 import datetime
+from django.views.decorators.http import require_POST, require_GET
 
 # Create your views here.
 
@@ -56,22 +57,25 @@ class ProductListView(ListView):
 
 def product_detail(request, pk):
     product = get_object_or_404(Product, id=pk)
-    form = ProductForm()
+    comments = product.comments.filter(active=True)
+    form = CommentForm()
     context = {
         'product': product,
         'new_date': datetime.datetime.now(),
         'form': form,
+        'comments': comments,
     }
     return render(request, 'store/product_detail.html', context)
 
 
-def add_to_cart(request):
+def add_to_cart(request, pk):
+    product_id = get_object_or_404(Product, id=pk)
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
             cart = Order.objects.create(
-                product = cd['product'],
+                product = product_id,
                 customer = cd['customer'],
                 quantity = cd['quantity'],
                 price = cd['price'],
@@ -100,3 +104,20 @@ def search_bar(request):
         else:
             results = Product.objects.none()
         return render(request, 'forms/search.html', {'form':form, 'results':results})
+    
+
+@require_POST
+def product_comment(request, pk):
+    product = get_object_or_404(Product, id=pk)
+    comment = None
+    form = CommentForm(data=request.POST)
+    if form.is_valid():
+        comment = form.save(commit=False)
+        comment.product = product
+        comment.save()
+    context = {
+        'product':product,
+        'comment':comment,
+        'form':form,
+    }
+    return render(request, 'forms/comment.html', context)
