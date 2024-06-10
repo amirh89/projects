@@ -62,7 +62,7 @@ class Product(models.Model):
     
 
     def __str__(self):
-        return self.name
+        return f"{self.name} : {self.category}"
     
         
 class Order(models.Model):
@@ -78,13 +78,22 @@ class Order(models.Model):
     class Meta:
         verbose_name = 'order'
         verbose_name_plural = 'orders'
-     
-    def placeOrder(self):
-        self.save()
-    
-    @staticmethod
-    def get_order_by_customer(customer_id):
-        return Order.objects.filter(customer=customer_id).order_by('-date')
     
 class Search(models.Model):
     query = models.ForeignKey(Product, on_delete=models.CASCADE)
+
+
+class Comment(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='comments')
+    name = models.CharField(max_length=300)
+    text = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    active = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = 'comment'
+        verbose_name_plural = 'comments'
+
+    def __str__(self):
+        return f'{self.name} : {self.product}'
