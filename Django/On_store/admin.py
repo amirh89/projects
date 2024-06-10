@@ -27,3 +27,9 @@ class OrderAdmin(admin.ModelAdmin):
     list_filter = ['price','status']
     search_fields = ['price']
     list_editable = ['quantity']
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ['product','name','created']
+    list_filter = ['created','updated']
+    search_fields = ['text']
