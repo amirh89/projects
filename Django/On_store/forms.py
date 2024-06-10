@@ -26,8 +26,14 @@ class ProductForm(forms.ModelForm):
 class OrderForm(forms.ModelForm):
     class Meta:
         model = Order
-        fields = ['product','customer','quantity','price','address','phone']
+        fields = ['customer','quantity','price','address','phone']
 
 
 class SearchForm(forms.Form):
     query = forms.CharField(max_length=260)
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['name','text']
