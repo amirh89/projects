@@ -1,0 +1,19 @@
+{% extends 'parent/base.html' %}
+{% load blog_tags %}
+{% block title %}product list{% endblock %}
+{% block content %}
+    <h2>products of {{ category.name }}</h2>
+
+<ol style="--length: {{ products | length }}" role="list">
+    {% for product in products %}
+        <li style="--i: {{ forloop.counter }}">   
+        <h3>
+        <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+        </h3>
+        </li>
+    {% endfor %}
+</ol>
+
+
+    {% include "partials/pagination.html" with page=page_obj %}
+{% endblock %}
