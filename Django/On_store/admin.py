@@ -33,3 +33,9 @@ class CommentAdmin(admin.ModelAdmin):
     list_display = ['product','name','created']
     list_filter = ['created','updated']
     search_fields = ['text']
+
+@admin.register(Allowance)
+class AllowanceAdmin(admin.ModelAdmin):
+    list_display = ['product','amount','date']
+    list_filter = ['date']
+    search_fields = ['description']
