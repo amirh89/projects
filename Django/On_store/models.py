@@ -22,6 +22,9 @@ class Category(models.Model):
     def __str__(self):
         return self.name
     
+    def get_absolute_url(self):
+        return reverse("store:products_of_categories", args=[self.id])
+    
 
 class Customer(models.Model):
     first_name = models.CharField(max_length=80)
@@ -48,7 +51,7 @@ class Customer(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=100)
     price = models.IntegerField(default=0)
-    category = models.ForeignKey(Category, on_delete = models.CASCADE, default=1)
+    category = models.ForeignKey(Category, on_delete = models.CASCADE, default=1, related_name="products")
     description = models.CharField(max_length=300, default='', null=True, blank=True)
     image = models.ImageField(upload_to='static/images', default=None, null=True, blank=True)
      
@@ -78,6 +81,7 @@ class Order(models.Model):
     class Meta:
         verbose_name = 'order'
         verbose_name_plural = 'orders'
+
     
 class Search(models.Model):
     query = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -97,3 +101,18 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'{self.name} : {self.product}'
+
+
+class Allowance(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='allowances')
+    amount = models.DecimalField(max_digits=50, decimal_places=0)
+    description = models.TextField()
+    date = models.DateTimeField(auto_now_add=True)
+
+
+    class Meta:
+        verbose_name = 'allowance'
+        verbose_name_plural = 'allowances'
+
+    def __str__(self):
+        return f'{self.amount}% of {self.product}'
