@@ -26,7 +26,7 @@ class ProductForm(forms.ModelForm):
 class OrderForm(forms.ModelForm):
     class Meta:
         model = Order
-        fields = ['customer','quantity','price','address','phone']
+        fields = ['customer','quantity','address','phone']
 
 
 class SearchForm(forms.Form):
@@ -37,3 +37,8 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['name','text']
+
+class AllowanceForm(forms.ModelForm):
+    class Meta:
+        model = Allowance
+        fields = ['amount','description']
