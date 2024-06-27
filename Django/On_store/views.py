@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import *
 from django.http import HttpResponse
 from .models import *
 from .forms import *
@@ -6,6 +6,7 @@ from django.views.generic import ListView
 import datetime
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 # Create your views here.
 
@@ -31,6 +32,22 @@ def login(request):
     return render(request, 'forms/login.html', {'form':form})
 
 
+def logout(request, pk):
+    form = Customer.objects.filter(id=pk)
+    form.delete()
+    return redirect('store:home')
+
+
+def customer_detail(request, pk):
+    customer = get_object_or_404(Customer, id=pk)
+    form = CustomerForm()
+    context = {
+        'customer':customer,
+        'form':form,
+    }
+    return render(request, 'store/customer_detail.html', context)
+
+
 def product(request):
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)
@@ -41,7 +58,9 @@ def product(request):
                 price = cd['price'],
                 category = cd['category'],
                 description = cd['description'],
-                image = cd['image'],)
+                image = cd['image'],
+                allowance_amount = cd['allowance_amount'],
+                text = cd['text'],)
             product_object.save()
             return redirect('store:home')
     else:
@@ -60,13 +79,14 @@ def product_detail(request, pk):
     product = get_object_or_404(Product, id=pk)
     comments = product.comments.filter(active=True)
     form = CommentForm()
-    allowance = product.allowances.all()
+    price = (product.allowance_amount/100)*product.price
+    new_price = product.price - price
     context = {
         'product': product,
         'new_date': datetime.datetime.now(),
         'form': form,
         'comments': comments,
-        'allowance': allowance,
+        'new_price': new_price,
     }
     return render(request, 'store/product_detail.html', context)
 
@@ -137,30 +157,6 @@ def delete_all_products_from_cart(request):
     return redirect('store:cart')
 
 
-def allowance(request, pk):
-    product_id = get_object_or_404(Product, id=pk)
-    if request.method == 'POST':
-        form = AllowanceForm(request.POST)
-        if form.is_valid():
-            cd = form.cleaned_data
-            allowance_obj = Allowance.objects.create(
-                product = product_id,
-                amount = cd['amount'],
-                description = cd['description'],
-            )
-            allowance_obj.save()
-            return redirect('store:home')
-    else:
-        form = AllowanceForm()
-    return render(request, 'forms/allowance.html', {'form':form})
-
-
-def delete_allowance(request, id):
-    allowance = Allowance.objects.filter(product=id)
-    allowance.delete()
-    return redirect('store:home')
-
-
 def search_bar(request):
     if request.method == 'GET':
         form = SearchForm(request.GET)
@@ -169,4 +165,8 @@ def search_bar(request):
             results = Product.objects.filter(name__icontains=query)
         else:
             results = Product.objects.none()
-        return render(request, 'forms/search.html', {'form':form, 'results':results})
+        context = {
+            'form':form,
+            'results':results,
+        }
+        return render(request, 'forms/search.html', context)
