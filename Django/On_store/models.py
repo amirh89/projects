@@ -10,6 +10,7 @@ from django.urls import reverse
 
 class Category(models.Model):
     name = models.CharField(max_length=70)
+    picture = models.ImageField(upload_to='static/images', default=None, blank=True, null=True)
 
     class Meta:
         verbose_name = 'category'
@@ -48,12 +49,18 @@ class Customer(models.Model):
     def __str__(self):
         return self.last_name
     
+    def get_absolute_url(self):
+        return reverse("store:customer_detail", args=[self.id])
+    
+    
 class Product(models.Model):
     name = models.CharField(max_length=100)
     price = models.IntegerField(default=0)
     category = models.ForeignKey(Category, on_delete = models.CASCADE, default=1, related_name="products")
     description = models.CharField(max_length=300, default='', null=True, blank=True)
     image = models.ImageField(upload_to='static/images', default=None, null=True, blank=True)
+    allowance_amount = models.IntegerField(default=0)
+    text = models.TextField(default="")
      
     class Meta:
         verbose_name = 'product'
@@ -67,7 +74,6 @@ class Product(models.Model):
     def __str__(self):
         return f"{self.name} : {self.category}"
     
-        
 class Order(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
@@ -101,18 +107,3 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'{self.name} : {self.product}'
-
-
-class Allowance(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='allowances')
-    amount = models.DecimalField(max_digits=50, decimal_places=0)
-    description = models.TextField()
-    date = models.DateTimeField(auto_now_add=True)
-
-
-    class Meta:
-        verbose_name = 'allowance'
-        verbose_name_plural = 'allowances'
-
-    def __str__(self):
-        return f'{self.amount}% of {self.product}'
