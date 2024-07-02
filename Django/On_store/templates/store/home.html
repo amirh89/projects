@@ -1,0 +1,43 @@
+{% extends 'parent/base.html' %}
+{% block title %} home {% endblock %}
+{% block content %}
+{% load static %}
+{% load blog_tags %}
+<link rel='stylesheets' href='static/css/base.css'>
+<!DOCTYPE html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<div id="navbar">
+    <a class="active" href="/store/">Home</a>
+    <a href="/store/login/">Login</a>
+    <a href="/store/product/">Product</a>
+    <a href="/store/product_list/">Product List</a>
+    <a href="/store/search_product/">Search Product</a>
+    <a href="/store/cart/">Cart</a>
+    <a href="/store/favorite_list/">Favorite List</a>
+
+      {% customer_detail as cd %}
+      {% if cd %}
+        {% for customer in cd %}
+            <a href="{{ customer.get_absolute_url }}">Profile</a>
+        {% endfor %}
+      {% endif %}
+  </div>
+
+<h1>Home</h1>
+<p>categories:{% catg %}</p>
+<p>Shopping based on categories:</p>
+  {% products_of_categories as pfc %}
+  {% for category in pfc %}
+    <a href="{{ category.get_absolute_url }}"><img src="{{ category.picture }}" width='170px'></img></a>
+  {% endfor %}
+  <br>
+  <br>
+  {% most_popular_category 3 as mpc %}
+  <p>The most popular categories are :</p>
+  {% for category in mpc %}
+    <a href="{{ category.get_absolute_url }}">"{{ category.name }}" with {{ category.products_count }} product{{ category.products_count | pluralize }}<br></a>
+  {% endfor %}
+
+
+{% endblock %}
