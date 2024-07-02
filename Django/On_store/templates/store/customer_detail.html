@@ -1,0 +1,29 @@
+{% extends 'parent/base.html' %}
+{% load blog_tags %}
+{% load static %}
+{% block title %}customer detail{% endblock %}
+
+{% block content %}
+    <h1>customer detail</h1>
+    <a href='/store/'>Home</a>
+    <br>
+    <h3><p>{{ customer.first_name }} {{ customer.last_name }}</p></h3>
+    <hr>
+    <p>phone_number : {{ customer.phone }} Rial</p>
+    <hr>
+    <p>email : {{ customer.email }}</p>
+    <hr>
+    <p>password : {{ customer.password }}</p>
+    <hr>
+    <form method="post" action="{% url 'store:logout' customer.id %}">
+        {% csrf_token %}
+       logout : <input type="submit" value="logout">
+    </form>
+    <hr>
+    <form method="get" action="{% url 'store:edit_profile' customer.id %}">
+        {% csrf_token %}
+        edit_profile : <input type="submit" value="edit_profile">
+    </form>
+
+    
+{% endblock %}
