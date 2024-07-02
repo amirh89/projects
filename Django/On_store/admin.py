@@ -33,3 +33,7 @@ class CommentAdmin(admin.ModelAdmin):
     list_display = ['product','name','created']
     list_filter = ['created','updated']
     search_fields = ['text']
+    
+@admin.register(Favorite)
+class FavoriteAdmin(admin.ModelAdmin):
+    list_display = ['product']
