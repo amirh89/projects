@@ -1,6 +1,5 @@
 from django import forms
 from .models import *
-from django.contrib.auth.forms import UserCreationForm
 
 class CustomerForm(forms.Form):
     first_name = forms.CharField(max_length=80, widget=forms.TextInput(attrs={'style':'height:60px;' 'width:900px;'}))
@@ -18,6 +17,10 @@ class CustomerForm(forms.Form):
             else:
                 return phone
 
+class CustomerModelForm(forms.ModelForm):
+    class Meta:
+        model = Customer
+        fields = ['first_name','last_name','phone','email','password']
 
 class ProductForm(forms.ModelForm):
     class Meta:
@@ -39,3 +42,9 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['name','text']
+
+
+class FavoriteForm(forms.ModelForm):
+    class Meta:
+        model = Favorite
+        fields = []
