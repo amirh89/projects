@@ -1,0 +1,76 @@
+{% extends 'parent/base.html' %}
+{% load blog_tags %}
+{% load static %}
+{% block title %}product detail{% endblock %}
+
+{% block content %}
+    <h1>product detail</h1>
+    <a href='/store/'>Home</a>
+    <br>
+    <br>
+    <a href='/store/product_list/'>Product List</a>
+
+    <h3><p>{{ product.name }}</p></h3>
+    <p>description : {{ product.description | markdown }}</p>
+    <hr>
+    <p>price : {{ product.price }} Rial</p>
+    <hr>
+    <p>category : {{ product.category }}</p>
+    <hr>
+    {% if product.image %}
+    Image : <img src="{{ MEDIA_URL }}{{ product.image.url }}" alt='The image'/>
+    {% else %}
+    Image : None
+    {% endif %}
+    <hr>
+    {% if product.allowance_amount %}
+        <p>allowance_amount : {{ product.allowance_amount }}%</p>
+        <hr>
+        <p>text : "{{ product.text }}"</p>
+        <hr>
+        <p>new_price : {{ new_price }} Rial</p>
+        <hr>
+    {% endif %}
+    
+    <p>{{ new_date | date:'r'}}</p>
+    <hr>
+    <form method='get' action="{% url 'store:add_to_cart' product.id %}">
+        {% csrf_token %}
+       Add to cart : <input type='submit' value='add to cart'>
+    </form>
+
+    <hr>
+    <div>
+        {% with comments.count as cm_count %}
+        {{ cm_count }} comment{{ cm_count|pluralize }}
+        </div>
+    
+        <div>
+        {% for cm in comments %}
+            "{{ cm.text }}" from {{ cm.name }}
+            <form method="post" action="{% url 'store:delete_comment' product.id cm.id %}">
+                {% csrf_token %}
+                <input type="submit" value="delete comment">
+            </form>
+            <br>
+    
+        {% empty %}
+            !کامنتی وجود ندارد
+        {% endfor %}
+        </div>
+        {% endwith %}
+        <hr>
+
+    <form method="post" action="{% url 'store:product_comment' product.id %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="add comment">
+    </form>
+    <hr>
+
+    <form method="post" action="{% url 'store:add_to_favorite' product.id %}">
+        {% csrf_token %}
+        Add to favorite : <input type="submit" value="add to favorite">
+    </form>
+    
+{% endblock %}
