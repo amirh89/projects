@@ -6,7 +6,6 @@ from django.views.generic import ListView
 import datetime
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
 
 # Create your views here.
 
@@ -46,6 +45,24 @@ def customer_detail(request, pk):
         'form':form,
     }
     return render(request, 'store/customer_detail.html', context)
+
+
+def edit_profile(request, pk):
+    profile = get_object_or_404(Customer, id=pk)
+
+    if request.method == 'GET':
+        context = {'form':CustomerModelForm(instance=profile), 'id':id}
+        return render(request, 'forms/edit_profile.html', context)
+    
+    if request.method == 'POST':
+        form = CustomerModelForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect(profile.get_absolute_url())
+    else:
+        form = CustomerModelForm()
+
+    return render(request, 'forms/edit_profile.html', {'form':form})
 
 
 def product(request):
@@ -108,6 +125,12 @@ def product_comment(request, pk):
     return render(request, 'forms/comment.html', context)
 
 
+def delete_comment(request, id, pk):
+    del_comment = Comment.objects.filter(product_id=pk, id=id)
+    del_comment.delete()
+    return redirect('store:home')
+
+
 def products_of_categories(request, id):
     category = get_object_or_404(Category, id=id)
     products = category.products.all()
@@ -155,6 +178,34 @@ def delete_all_products_from_cart(request):
     products = Order.objects.all()
     products.delete()
     return redirect('store:cart')
+
+
+class FavoritesList(ListView):
+    queryset = Favorite.objects.all()
+    context_object_name = 'favorites'
+    paginate_by = 3
+    template_name = 'store/favorite_list.html'
+
+
+def add_to_favorite(request, pk):
+    product_id = get_object_or_404(Product, pk=pk)
+    if request.method == 'GET':
+        form = FavoriteForm(request.GET)
+        if form.is_valid():
+            favorite = Favorite.objects.create(
+                product = product_id,
+            )
+            favorite.save()
+            return redirect('store:favorite_list')
+    else:
+        form = FavoriteForm()
+    return render(request, 'forms/add_to_favorite.html', {'form':form})
+
+
+def remove_product_from_favorite_list(request, id):
+    product = Favorite.objects.filter(id=id)
+    product.delete()
+    return redirect('store:favorite_list')
 
 
 def search_bar(request):
