@@ -1,0 +1,23 @@
+{% extends 'parent/base.html' %}
+{% load blog_tags %}
+{% block title %}favorite list{% endblock %}
+{% block content %}
+    <h1>Favorite List</h1>
+    
+    <a href='/store/'>Home</a>
+<ol style="--length: {{ favorites | length }}" role="list">
+    {% for favorite in favorites %}
+        <li style="--i: {{ forloop.counter }}">   
+        <a href="{{ favorite.product.get_absolute_url }}"><p>{{ favorite.product }}</p></a>
+        <br>
+        <form method='post' action="{% url 'store:remove_product_from_favorite_list' favorite.id %}">
+            {% csrf_token %}
+            <input type='submit' value='remove product'>
+        </form>
+
+        </li>
+    {% endfor %}
+</ol>
+
+    {% include "partials/pagination.html" with page=page_obj %}
+{% endblock %}
