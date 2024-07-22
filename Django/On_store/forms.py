@@ -8,7 +8,6 @@ class CustomerForm(forms.Form):
     email = forms.EmailField(widget=forms.EmailInput(attrs={'style':'height:60px;' 'width:900px;'}))
     password = forms.CharField(max_length=90, widget=forms.TextInput(attrs={'style':'height:60px;' 'width:900px;'}))
     
-
     def clean_phone(self):
         phone = self.cleaned_data['phone']
         if phone:
@@ -21,6 +20,7 @@ class CustomerModelForm(forms.ModelForm):
     class Meta:
         model = Customer
         fields = ['first_name','last_name','phone','email','password']
+
 
 class ProductForm(forms.ModelForm):
     class Meta:
@@ -35,7 +35,7 @@ class OrderForm(forms.ModelForm):
 
 
 class SearchForm(forms.Form):
-    query = forms.CharField(max_length=260)
+    query = forms.CharField(max_length=260, required=False)
 
 
 class CommentForm(forms.ModelForm):
