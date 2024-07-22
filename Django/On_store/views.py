@@ -1,11 +1,12 @@
 from django.shortcuts import *
-from django.http import HttpResponse
+from django.http import JsonResponse
 from .models import *
 from .forms import *
+from .serializer import *
 from django.views.generic import ListView
 import datetime
 from django.views.decorators.http import require_POST
-from django.contrib.auth.decorators import login_required
+from rest_framework import generics
 
 # Create your views here.
 
@@ -141,13 +142,6 @@ def products_of_categories(request, id):
     return render(request, 'forms/pfc.html', context)
 
 
-class CartListView(ListView):
-    queryset = Order.objects.all()
-    context_object_name = 'carts'
-    paginate_by = 5
-    template_name = 'store/cart.html'
-
-
 def add_to_cart(request, pk):
     product_id = get_object_or_404(Product, id=pk)
     if request.method == 'POST':
@@ -168,6 +162,13 @@ def add_to_cart(request, pk):
     return render(request, 'forms/add_to_cart.html', {'form': form})
 
 
+class CartListView(ListView):
+    queryset = Order.objects.all()
+    context_object_name = 'carts'
+    paginate_by = 5
+    template_name = 'store/cart.html'
+
+
 def remove_from_cart(request, id):
     product = Order.objects.filter(id=id)
     product.delete()
@@ -178,13 +179,6 @@ def delete_all_products_from_cart(request):
     products = Order.objects.all()
     products.delete()
     return redirect('store:cart')
-
-
-class FavoritesList(ListView):
-    queryset = Favorite.objects.all()
-    context_object_name = 'favorites'
-    paginate_by = 3
-    template_name = 'store/favorite_list.html'
 
 
 def add_to_favorite(request, pk):
@@ -202,6 +196,13 @@ def add_to_favorite(request, pk):
     return render(request, 'forms/add_to_favorite.html', {'form':form})
 
 
+class FavoritesList(ListView):
+    queryset = Favorite.objects.all()
+    context_object_name = 'favorites'
+    paginate_by = 3
+    template_name = 'store/favorite_list.html'
+
+
 def remove_product_from_favorite_list(request, id):
     product = Favorite.objects.filter(id=id)
     product.delete()
@@ -209,15 +210,14 @@ def remove_product_from_favorite_list(request, id):
 
 
 def search_bar(request):
-    if request.method == 'GET':
-        form = SearchForm(request.GET)
-        if form.is_valid():
-            query = form.cleaned_data['query']
-            results = Product.objects.filter(name__icontains=query)
-        else:
-            results = Product.objects.none()
-        context = {
-            'form':form,
-            'results':results,
-        }
-        return render(request, 'forms/search.html', context)
+    form = SearchForm(request.GET)
+    if form.is_valid():
+        query = form.cleaned_data['query']
+        results = Product.objects.filter(name__icontains=query)
+    else:
+        results = Product.objects.all()
+    context = {
+        'form':form,
+        'results':results,
+    }
+    return render(request, 'forms/search.html', context)
