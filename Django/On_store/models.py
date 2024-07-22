@@ -1,8 +1,6 @@
 from typing import Any
 from django.db import models
-from django.db.models.query import QuerySet
-from django.contrib.auth.models import User
-from django.utils import timezone
+from django.contrib.auth.models import AbstractBaseUser
 import datetime
 from django.urls import reverse
 
@@ -15,10 +13,6 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'category'
         verbose_name_plural = 'categories'
-
-    @staticmethod
-    def get_all_categories():
-        return Category.objects.all()
 
     def __str__(self):
         return self.name
@@ -36,16 +30,10 @@ class Customer(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
-
     class Meta:
         verbose_name = 'customer'
         verbose_name_plural = 'customers'
-
-
-    def register(self):
-        self.save()
     
-
     def __str__(self):
         return self.last_name
     
@@ -66,14 +54,13 @@ class Product(models.Model):
         verbose_name = 'product'
         verbose_name_plural = 'products'
 
-
+    def __str__(self):
+        return f"{self.name} : {self.category}"
+    
     def get_absolute_url(self):
         return reverse("store:product_detail", args=[self.id])
     
 
-    def __str__(self):
-        return f"{self.name} : {self.category}"
-    
 class Order(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
@@ -87,6 +74,9 @@ class Order(models.Model):
     class Meta:
         verbose_name = 'order'
         verbose_name_plural = 'orders'
+
+    def __str__(self):
+        return f'{self.product}'
 
     
 class Search(models.Model):
@@ -107,6 +97,7 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'{self.name} : {self.product}'
+
 
 class Favorite(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
