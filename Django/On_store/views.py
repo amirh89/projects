@@ -1,12 +1,11 @@
 from django.shortcuts import *
-from django.http import JsonResponse
+from django.http import *
 from .models import *
 from .forms import *
 from .serializer import *
 from django.views.generic import ListView
 import datetime
 from django.views.decorators.http import require_POST
-from rest_framework import generics
 
 # Create your views here.
 
@@ -52,7 +51,7 @@ def edit_profile(request, pk):
     profile = get_object_or_404(Customer, id=pk)
 
     if request.method == 'GET':
-        context = {'form':CustomerModelForm(instance=profile), 'id':id}
+        context = {'form':CustomerModelForm(instance=profile), 'id':pk}
         return render(request, 'forms/edit_profile.html', context)
     
     if request.method == 'POST':
