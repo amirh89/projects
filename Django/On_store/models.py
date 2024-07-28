@@ -1,6 +1,4 @@
-from typing import Any
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser
 import datetime
 from django.urls import reverse
 
@@ -49,6 +47,8 @@ class Product(models.Model):
     image = models.ImageField(upload_to='static/images', default=None, null=True, blank=True)
     allowance_amount = models.IntegerField(default=0)
     text = models.TextField(default="")
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
      
     class Meta:
         verbose_name = 'product'
