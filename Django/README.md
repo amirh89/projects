@@ -1,3 +1,3 @@
 Hello
 
-This is my first django project called Portfolio.
+This is my first django project called Learning.
