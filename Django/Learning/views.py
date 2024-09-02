@@ -4,7 +4,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import *
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
-from django.contrib.postgres.search import SearchVector
 
 # Create your views here.
 
