@@ -1,9 +1,10 @@
 from typing import Any
-from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import *
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
+from rest_framework import generics
+from .serializer import *
 
 # Create your views here.
 
@@ -63,10 +64,37 @@ def logout(request, pk):
     return redirect('learning:home')
 
 
+class PackList(ListView):
+    queryset = LearningPackage.objects.all()
+    context_object_name = 'packs'
+    paginate_by = 5
+    template_name = 'learning/pack_list.html'
+
+
 import datetime
 def package_detail(request, pk):
     package = get_object_or_404(LearningPackage, pk=pk)
     return render(request, 'learning/pack_detail.html', {"package":package, 'new_date':datetime.datetime.now})
+
+
+def edit_pack(request, pk):
+    pack = get_object_or_404(LearningPackage, pk=pk)
+
+    if request.method == 'GET':
+        context = {
+            'model_form':EditPack(instance=pack),
+            'id':pk,
+        }
+        return render(request, 'forms/edit_pack.html', context)
+    
+    if request.method == 'POST':
+        pack_form = EditPack(request.POST, instance=pack)
+        if pack_form.is_valid():
+            pack_form.save()
+            return redirect(pack.get_absolute_url())
+    else:
+        form = EditPack()
+    return render(request, 'forms/edit_pack.html', {'form':form})
 
 
 def add_to_cart(request, pk):
@@ -94,3 +122,8 @@ class CartList(ListView):
     context_object_name = 'packs'
     paginate_by = 10
     template_name = 'learning/cart_list.html'
+
+
+class AddPack(generics.ListCreateAPIView):
+    queryset = LearningPackage.objects.all()
+    serializer_class = AddPackSerializer
