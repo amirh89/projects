@@ -43,3 +43,9 @@ class AddToCartForm(forms.ModelForm):
     class Meta:
         model = Cart
         fields = ['customer','quantity','phone']
+
+
+class EditPack(forms.ModelForm):
+    class Meta:
+        model = LearningPackage
+        fields = ['name','description','author','category','image','video','price_with_discount']
