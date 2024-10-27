@@ -1,3 +1,3 @@
 Hello
 
-This is my first django project called Store.
+These are my projects.
