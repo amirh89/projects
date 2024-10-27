@@ -1,8 +1,8 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render
 from .forms import *
 
 # Create your views here.
 
-def home(request):
-    form = MyForm()
+def convert_text_to_html(request):
+    form = TextConvertorForm()
     return render(request, 'forms/index.html', {'form':form})
