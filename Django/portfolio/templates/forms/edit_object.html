@@ -1,0 +1,14 @@
+{% extends "parent/base.html" %}
+{% block title %}Edit Object{% endblock title %}
+{% block content %}
+
+    <form method='post' enctype='multipart/form-data'>
+        {% csrf_token %}
+        {{ form.as_p }}
+        (Time to read is about minutes)
+        <br>
+        <br>
+        <button type='submit'>Edit</button>
+    </form>
+
+{% endblock content %}
