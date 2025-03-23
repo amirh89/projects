@@ -1,0 +1,30 @@
+{% load static %}
+{% load thumbnail %}
+
+    <link rel='stylesheet' type='text/css' href="{% static 'css/header.css' %}">
+
+<!DOCTYPE html>
+<html>
+
+<body>
+
+<ul>
+  <li><a class="active" href="/hobby/">Home</a></li>
+  <li><a href="/hobby/objects/">Objects</a></li>
+</ul>
+
+  <link rel='stylesheet' type='text/css' href="{% static "css/index.css" %}">
+  
+    <br>
+
+    <div id='p'>
+    <a href='/hobby/profile/'>
+    {% if user.photo %}
+    <img class='user-photo' src="{% thumbnail user.photo 100x100 crop="0,0" %}" alt='picture'>
+    {% endif %}
+    </a>
+    <p id='user'>{{ user.first_name }} {{ user.last_name }}</p>
+    </div>
+
+</body>
+</html>
