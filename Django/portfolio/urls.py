@@ -24,6 +24,7 @@ urlpatterns = [
     path('add_object/', add_object, name='add_object'),
     path('objects/', ObjectList.as_view(), name='object_list'),
     path('objects/<pk>/', object_detail, name='object_detail'),
+    path('objects/<pk>/all_comments/', comments_of_objects, name='comments_of_objects'),
     path('objects/<pk>/edit/', edit_object, name='edit_object'),
 
     path('search_object/', search_object, name='search_object'),
