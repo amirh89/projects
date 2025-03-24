@@ -1,0 +1,10 @@
+{% extends "parent/base.html" %}
+{% block title %}All Comments{% endblock title %}
+{% block content %}
+
+    <h2 align='center'>ALL Comments of "{{ obj.title }}"</h2>
+    {% for comment in comments %}
+        <h3> {{ comment.name }} : {{ comment.body | linebreaksbr }}</h3>
+    {% endfor %}
+
+{% endblock content %}
