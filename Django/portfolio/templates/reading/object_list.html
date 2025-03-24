@@ -1,0 +1,25 @@
+{% extends 'parent/base.html' %}
+{% block title %}Object List{% endblock %}
+{% block content %}
+{% load static %}
+
+    <link rel='stylesheet' type='text/css' href="{% static "css/objects.css" %}">
+
+    <body>
+        <h1>Object List</h1>
+        {% for object in objects %}
+        <ol class="olcards">
+            <li style="--cardColor:#36aeb3">
+                <div class="content">
+                    <div class="icon">{{ object.category }}</div>
+                    <div class="title"><a href="{{ object.get_absolute_url }}">{{ object.title }}</a></div>
+                    <div class="text">{{ object.description | truncatewords:5 }}</div>
+                </div>
+            </li>
+        </ol>
+        {% endfor %}
+    </body>
+
+    {% include "partials/pagination.html" with page=page_obj %}
+    
+{% endblock %}
