@@ -1,0 +1,302 @@
+.audio{
+    position: absolute;
+    top: 150px;
+}
+
+.image{
+    position: absolute;
+    bottom: 5cm;
+    left: 33.5cm;
+}
+
+/* From Uiverse.io by suda-code */ 
+.edit {
+    padding: 12.5px 30px;
+    border: 0;
+    border-radius: 100px;
+    background-color: #2ba8fb;
+    color: #ffffff;
+    font-weight: Bold;
+    transition: all 0.5s;
+    -webkit-transition: all 0.5s;
+  }
+  
+  .edit:hover {
+    background-color: #6fc5ff;
+    box-shadow: 0 0 20px #6fc5ff50;
+    transform: scale(1.1);
+  }
+  
+  .edit:active {
+    background-color: #3d94cf;
+    transition: all 0.25s;
+    -webkit-transition: all 0.25s;
+    box-shadow: none;
+    transform: scale(0.98);
+  }
+
+/* 
+* Design by Robert Mayer:https://goo.gl/CJ7yC8
+*
+*I intentionally left out the line that was supposed to be below the subheader simply because I don't like how it looks.
+*
+* Chronicle Display Roman font was substituted for similar fonts from Google Fonts.
+*/
+
+body {
+  background-color: #fdf1ec;
+}
+
+.wrapper {
+  height: 420px;
+  width: 1194px;
+  margin: 50px auto;
+  border-radius: 7px 7px 7px 7px;
+  /* VIA CSS MATIC https://goo.gl/cIbnS */
+  -webkit-box-shadow: 0px 14px 32px 0px rgba(0, 0, 0, 0.15);
+  -moz-box-shadow: 0px 14px 32px 0px rgba(0, 0, 0, 0.15);
+  box-shadow: 0px 14px 32px 0px rgba(0, 0, 0, 0.15);
+}
+
+.product-img {
+  float: left;
+  height: 420px;
+  width: 327px;
+}
+
+
+
+.product-img img {
+  border-radius: 7px 0 0 7px;
+}
+
+.product-info {
+  float: left;
+  height: 420px;
+  width: 357px;
+  border-radius: 0 7px 10px 7px;
+  background-color: #ffffff;
+}
+
+.product-text {
+  height: 300px;
+  width: 327px;
+}
+
+.product-text h1 {
+  margin: 0 0 0 38px;
+  padding-top: 52px;
+  font-size: 34px;
+  color: #474747;
+}
+
+.product-text h1,
+.product-price-btn p {
+  font-family: 'Bentham', serif;
+}
+
+.product-text h2 {
+  margin: 0 0 47px 38px;
+  font-size: 13px;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: #d2d2d2;
+  letter-spacing: 0.2em;
+}
+
+.product-text p {
+  height: 125px;
+  margin: 0 0 0 38px;
+  font-family: 'Playfair Display', serif;
+  color: #635959;
+  line-height: 1.7em;
+  font-size: 15px;
+  font-weight: lighter;
+  overflow: hidden;
+}
+
+.product-price-btn {
+  height: 103px;
+  width: 327px;
+  margin-top: 17px;
+  position: relative;
+}
+
+.product-price-btn p {
+  display: inline-block;
+  position: absolute;
+  top: -13px;
+  height: 50px;
+  font-family: 'Trocchi', serif;
+  margin: 0 0 0 38px;
+  font-size: 28px;
+  font-weight: lighter;
+  color: #474747;
+}
+
+span {
+  display: inline-block;
+  height: 50px;
+  font-family: 'Suranna', serif;
+  font-size: 34px;
+}
+
+.product-price-btn button {
+  float: right;
+  display: block;
+  height: 50px;
+  width: 176px;
+  margin: 0 40px 0 16px;
+  box-sizing: border-box;
+  border: transparent;
+  border-radius: 60px;
+  font-family: 'Raleway', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: #ffffff;
+  background-color: #9cebd5;
+  cursor: pointer;
+  outline: none;
+}
+
+.product-price-btn button:hover {
+  background-color: #79b0a1;
+}
+  
+.object-media {
+  float: right;
+  height: 520px;
+  width: 500px;
+}
+
+/* From Uiverse.io by Yaya12085 */ 
+.card {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  left: 10%;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.form {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.group {
+  position: relative;
+}
+
+.form .group label {
+  font-size: 14px;
+  color: rgb(99, 102, 102);
+  position: absolute;
+  top: -10px;
+  left: 10px;
+  background-color: #fff;
+  transition: all .3s ease;
+}
+
+.form .group input,
+.form .group textarea {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  margin-bottom: 20px;
+  outline: 0;
+  width: 90%;
+  background-color: transparent;
+}
+
+.form .group input:placeholder-shown+ label, .form .group textarea:placeholder-shown +label {
+  top: 10px;
+  background-color: transparent;
+}
+
+.form .group input:focus,
+.form .group textarea:focus {
+  border-color: #3366cc;
+}
+
+.form .group input:focus+ label, .form .group textarea:focus +label {
+  top: -10px;
+  left: 10px;
+  background-color: #fff;
+  color: #3366cc;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.form .group textarea {
+  resize: none;
+  height: 100px;
+}
+
+.form button {
+  background-color: #3366cc;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.form button:hover {
+  background-color: #27408b;
+}
+
+.comments{
+  height: 8.5cm;
+  width: 12cm;
+  background-color: #ffffff;
+  border-radius: 20px;
+  position: absolute;
+  left: 15cm;
+  top: 16.3cm;
+}
+
+#name{
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-size: small;
+  color: #635959;
+}
+
+#body{
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
+}
+
+.about_object{
+  height: 7cm;
+  width: 10cm;
+  background-color: #c7dfdf;
+  position: absolute;
+  top: 17cm;
+  left: 28cm;
+}
+
+.about_object p {
+  font-family: cursive;
+  font-style: normal;
+  font-size: large;
+  color: #000000b7;
+}
+
+#all-comments{
+  text-align: center;
+  text-decoration: none;
+}
