@@ -65,7 +65,6 @@ def post_comment(request, pk):
     }
     return render(request, 'forms/post_comment.html', context)
 
-
 def objects_of_category(request, name):
     category = get_object_or_404(Category, name=name)
     objs = category.objs.all()
@@ -94,8 +93,14 @@ class ObjectList(ListView):
 def object_detail(request, pk):
     obj = get_object_or_404(Object, pk=pk)
     form = CommentForm()
-    comments = obj.comments.all()
+    comments = obj.comments.all()[:3]
     return render(request, 'reading/object_detail.html', {'obj':obj,'form':form,'comments':comments})
+
+
+def comments_of_objects(request, pk):
+    obj = get_object_or_404(Object, pk=pk)
+    comments = obj.comments.all()
+    return render(request, 'reading/comments_of_objects.html', {'obj':obj,'comments':comments})
 
 
 @login_required
