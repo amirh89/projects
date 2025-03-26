@@ -39,12 +39,6 @@ class CommentForm(forms.ModelForm):
         fields = ['body']
 
 
-class CategoryForm(forms.ModelForm):
-    class Meta:
-        model = Category
-        fields = '__all__'
-
-
 class ObjectForm(forms.ModelForm):
     class Meta:
         model = Object
