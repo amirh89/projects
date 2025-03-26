@@ -1,0 +1,192 @@
+{% extends "parent/base.html" %}
+{% block title %}Object Detail{% endblock title %}
+{% block content %}
+{% load thumbnail %}
+{% load static %}
+{% load blog_tags %}
+
+    <link rel='stylesheet' type='text/css' href="{% static "css/detail.css" %}">
+
+    <html lang="en">
+
+    <head>
+      <link href="https://fonts.googleapis.com/css?family=Bentham|Playfair+Display|Raleway:400,500|Suranna|Trocchi" rel="stylesheet">
+    </head>
+
+    <body>
+      <div class="wrapper">
+        <div class='object-media'>
+      
+        {% if obj.audio %}
+          <audio class='audio' controls>
+            <source src="{{ obj.audio.url }}" type='audio/mp3'>
+          </audio>
+        {% else %}
+          No audio.
+        {% endif %}
+
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+
+        {% if obj.film %}
+          <video height='300px' width='500px' controls>
+            <source src="{{ obj.film.url }}" type='video/mp4'>
+          </video>
+        {% else %}
+          No film.
+        {% endif %}
+    
+
+    </div>
+
+    <div class="product-img">
+
+      {% if obj.image %}
+        <img src="{% thumbnail obj.image 310x400 crop='0,0' %}" alt='the image' />
+       {% else %}
+        No picture.
+       {% endif %}
+
+    </div>
+
+    <div class="product-info">
+
+      <div class="product-text">
+
+        <h1>{{ obj.title }}</h1>
+
+        <h2>{{ obj.category }}</h2>
+
+        {% comment %} <h2>by studio and friends</h2> {% endcomment %}
+        <p>{{ obj.description | linebreaksbr }}</p>
+
+      </div>
+
+      <div class="product-price-btn">
+
+        <form method='get' action="{% url "hobby:edit_object" obj.pk %}">
+            {% csrf_token %}
+            <button class='edit'>Edit</button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- From Uiverse.io by Yaya12085 --> 
+  <div class="card">
+    <span class="title">Leave a Comment</span>
+    <form class="form" method='post' action="{% url "hobby:post_comment" obj.pk %}">
+      <div class="group">
+      <form method='post' action="{% url "hobby:post_comment" obj.pk %}">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <label for="body">Body</label>
+      </div>
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+
+  <br>
+  <div class='comments'>
+    <br>
+    <h3 align='center'>Comments</h3>
+    {% for comment in comments %}
+      <p id='name'> {{ comment.name }} : </p> <p id='body'>{{ comment.body | linebreaksbr }}</p>
+    {% endfor %}
+    <p id='all-comments'><a href="{% url "hobby:comments_of_objects" obj.id %}">See All Comments</a></p>
+  </div>
+  
+  <div class='about_object'>
+    <p>
+    "{{ obj.author }}" is the author of this object.
+    <br>
+
+    time to read : {{ obj.time_to_read }} mins
+    <br>
+
+    created : {{ obj.created }}</p>
+  </div>
+
+  <div class='obj' data-obj-id="{{ obj.id }}">
+    <button class='like-button'>
+      {% if request.user in obj.like.all %}
+        Unlike
+      {% else %}
+        Like
+      {% endif %}
+    </button>
+    <span class='likes-count'>{{ obj.like.count }}</span>
+  </div>
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-
+      v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+    $(document).ready(function() {
+        $('.like-button').click(function() {
+            var object_id = $(this).closest('.obj').data('obj-id');
+            var  button = $(this);
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url 'hobby:like_object' %}',
+                data: {'object_id': object_id, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                success: function(data) {
+                    if (data.liked){
+                        button.text('UnLike');
+                    } else {
+                        button.text('Like');
+                    }
+                    $('.likes-count').text(data.likes_count);
+                },
+            });
+        });
+    });
+
+    </script>
+
+  <div class='obj' data-obj-id="{{ obj.id }}">
+    <button class='save-button'>
+      {% if request.user in obj.saved_by.all %}
+        Unsave
+      {% else %}
+        Save
+      {% endif %}
+    </button>
+    <span class='saves-count'>{{ obj.saved_by.count }}</span>
+  </div>
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-
+      v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+    $(document).ready(function() {
+        $('.save-button').click(function() {
+            var object_id = $(this).closest('.obj').data('obj-id');
+            var  button = $(this);
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url 'hobby:save_object' %}',
+                data: {'object_id': object_id, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                success: function(data) {
+                    if (data.saved){
+                        button.text('Unsave');
+                    } else {
+                        button.text('Save');
+                    }
+                    $('.saves-count').text(data.saves_count);
+                },
+            });
+        });
+    });
+
+    </script>
+
+</body>
+
+</html>
+
+{% endblock content %}
