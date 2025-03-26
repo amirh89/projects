@@ -19,7 +19,6 @@ urlpatterns = [
 
     path('<pk>/post_comment/', post_comment, name='post_comment'),
 
-    path('add_category/', add_category, name='add_category'),
     path('objects_of_category/<str:name>/', objects_of_category, name='objects_of_category'),
 
     path('add_object/', add_object, name='add_object'),
