@@ -1,0 +1,18 @@
+{% extends 'parent/base.html' %}
+{% block title %}Posting Comment{% endblock %}
+
+{% block content %}
+
+    {% if comment %}
+        Your comment posted.
+        <a href="{{ model.get_absolute_url }}">return</a>
+    {% else %}
+
+    <form method="post" action="{% url 'hobby:post_comment' model.id %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="post comment">
+    </form>  
+    {% endif %}
+    
+{% endblock %}

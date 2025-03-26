@@ -1,0 +1,23 @@
+{% extends "parent/base.html" %}
+{% block title %}Edit Object{% endblock title %}
+{% block content %}
+{% load static %}
+
+    <link rel='stylesheet' type='text/css' href="{% static "css/registration.css" %}">
+
+    <p class='title'>Edit Object</p>
+    <p class='message'>You can edit the object here</p>
+
+    <div class='flex'>
+
+        <form method='post' enctype='multipart/form-data' class='form'>
+            {% csrf_token %}
+            <div class='input'>{{ form.as_p }}</div>
+            (Time to read is about minutes)
+            <br>
+            <br>
+            <input type='submit' value='edit' class='submit'>
+        </form>
+    </div>
+
+{% endblock content %}
