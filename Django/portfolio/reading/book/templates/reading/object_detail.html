@@ -39,7 +39,6 @@
           No film.
         {% endif %}
     
-
     </div>
 
     <div class="product-img">
@@ -111,7 +110,7 @@
     created : {{ obj.created }}</p>
   </div>
 
-  <div class='obj' data-obj-id="{{ obj.id }}">
+  <div class='object' data-obj-id="{{ obj.id }}">
     <button class='like-button'>
       {% if request.user in obj.like.all %}
         Unlike
@@ -120,35 +119,6 @@
       {% endif %}
     </button>
     <span class='likes-count'>{{ obj.like.count }}</span>
-  </div>
-
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-
-      v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script>
-    $(document).ready(function() {
-        $('.like-button').click(function() {
-            var object_id = $(this).closest('.obj').data('obj-id');
-            var  button = $(this);
-
-            $.ajax({
-                type: 'POST',
-                url: '{% url 'hobby:like_object' %}',
-                data: {'object_id': object_id, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
-                success: function(data) {
-                    if (data.liked){
-                        button.text('UnLike');
-                    } else {
-                        button.text('Like');
-                    }
-                    $('.likes-count').text(data.likes_count);
-                },
-            });
-        });
-    });
-
-    </script>
-
-  <div class='obj' data-obj-id="{{ obj.id }}">
     <button class='save-button'>
       {% if request.user in obj.saved_by.all %}
         Unsave
@@ -159,25 +129,29 @@
     <span class='saves-count'>{{ obj.saved_by.count }}</span>
   </div>
 
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-
       v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
-    $(document).ready(function() {
-        $('.save-button').click(function() {
-            var object_id = $(this).closest('.obj').data('obj-id');
-            var  button = $(this);
+      $(document).ready(function() {
+        $('.like-button, .save-button').click(function(event) {
+            event.preventDefault();
+            var button = $(this);
+            var object_id = button.closest('.object').data('obj-id');
+            var action = button.hasClass('like-button') ? 'like_object' : 'save_object';
+            var url = action === 'like_object' ? '{% url "hobby:like_object" %}' : '{% url "hobby:save_object" %}';
 
             $.ajax({
                 type: 'POST',
-                url: '{% url 'hobby:save_object' %}',
+                url: url,
                 data: {'object_id': object_id, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
                 success: function(data) {
-                    if (data.saved){
-                        button.text('Unsave');
+                    if (data.action_status) {
+                        button.text(button.hasClass('like-button') ? 'Unlike' : 'Unsave');
                     } else {
-                        button.text('Save');
+                        button.text(button.hasClass('like-button') ? 'Like' : 'Save');
                     }
-                    $('.saves-count').text(data.saves_count);
+                    button.closest('.object').find('.likes-count').text(data.like_count);
+                    button.closest('.object').find('.saves-count').text(data.saved_by_count);
                 },
             });
         });
