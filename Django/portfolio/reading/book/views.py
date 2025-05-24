@@ -78,11 +78,6 @@ def add_something(request, object_form):
 
 
 @login_required
-def add_category(request):
-    return add_something(request, CategoryForm)
-
-
-@login_required
 def add_object(request):
     return add_something(request, ObjectForm)
 
