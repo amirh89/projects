@@ -65,22 +65,32 @@ def post_comment(request, pk):
     }
     return render(request, 'forms/post_comment.html', context)
 
-def objects_of_category(request, name):
-    category = get_object_or_404(Category, name=name)
-    objs = category.objs.all()
-    return render(request, 'reading/objects_of_category.html', {'category':category, 'objs':objs})
 
-
-@login_required
-def add_object(request):
+def add_something(request, object_form):
     if request.method == 'POST':
-        form = ObjectForm(request.POST, files=request.FILES)
+        form = object_form(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return redirect('hobby:home')
     else:
-        form = ObjectForm()
-    return render(request, 'forms/add_object.html', {'form':form})
+        form = object_form()
+    return render(request, 'forms/add_something.html', {'form':form})
+
+
+@login_required
+def add_category(request):
+    return add_something(request, CategoryForm)
+
+
+@login_required
+def add_object(request):
+    return add_something(request, ObjectForm)
+
+
+def objects_of_category(request, name):
+    category = get_object_or_404(Category, name=name)
+    objs = category.objs.all()
+    return render(request, 'reading/objects_of_category.html', {'category':category, 'objs':objs})
 
 
 class ObjectList(ListView):
@@ -139,51 +149,38 @@ def search_object(request):
     return render(request, 'forms/search_object.html', context)
 
 
+def control_object_actions(request, action):
+    object_id = request.POST.get('object_id')
+    if object_id is None:
+        return JsonResponse({'error':'invalid'})
+    
+    object = get_object_or_404(Object, id=object_id)
+    user = request.user
+
+    action_list = getattr(object, action)
+
+    if user in action_list.all():
+        action_list.remove(user)
+        action_status = False
+    else:
+        action_list.add(user)
+        action_status = True
+
+    response = {
+        action:action_status,
+        f'{action}_count':action_list.count()
+    }
+
+    return JsonResponse(response)
+
+
 @login_required
 @require_POST
 def like_object(request):
-    object_id = request.POST.get('object_id')
-    if object_id is not None:
-        object = get_object_or_404(Object, id=object_id)
-        user = request.user
-
-        if user in object.like.all():
-            object.like.remove(user)
-            liked = False
-        else:
-            object.like.add(user)
-            liked = True
-
-        likes_count = object.like.count()
-        response = {
-            'liked':liked,
-            'likes_count':likes_count,
-        }
-    else:
-        response = {'error':'invalid'}
-    return JsonResponse(response)
+    return control_object_actions(request, 'like')
 
 
 @login_required
 @require_POST
 def save_object(request):
-    object_id = request.POST.get('object_id')
-    if object_id is not None:
-        object = get_object_or_404(Object, id=object_id)
-        user = request.user
-
-        if user in object.saved_by.all():
-            object.saved_by.remove(user)
-            saved = False
-        else:
-            object.saved_by.add(user)
-            saved = True
-
-        saves_count = object.saved_by.count()
-        response = {
-            'saves_count':saves_count,
-            'saved':saved
-        }
-    else:
-        response = {'error':'invalid'}
-    return JsonResponse(response)
+    return control_object_actions(request, 'saved_by')
